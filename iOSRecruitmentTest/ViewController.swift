@@ -13,25 +13,24 @@ class ViewController: UIViewController, UITableViewDataSource, UISearchBarDelega
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var tableView: UITableView!
     
+    var viewModel: ItemsViewModel!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-        tableView.registerNib(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "TableViewCell")
+        tableView.register(TableViewCell.self)
+        
+        viewModel.fetchItems { [weak self] in
+            self?.tableView.reloadData()
+        }
     }
 
-
-    // MARK: - UITableView data source
-    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 20
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return viewModel.items.count
     }
     
-    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell =  tableView.dequeueReusableCellWithIdentifier("TableViewCell") as! TableViewCell
-        
-        cell.item = nil
-        
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: TableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
+        cell.item = viewModel.items[indexPath.row]
         return cell
     }
-    
 }

@@ -6,18 +6,23 @@
 //  Copyright © 2016 Snowdog. All rights reserved.
 //
 
-import UIKit
+import AlamofireImage
 
 class TableViewCell: UITableViewCell {
 
-    var item: AnyObject? {
+    var item: Item? {
         didSet {
-            if item == nil {
+            if let item = item {
+                itemTitleLabel.text = item.name
+                itemDescLabel.text = item.details
+                
+                if let icon = item.icon {
+                    iconView.af_setImage(withURL: URL(string: icon)!)
+                }
+            } else {
                 iconView.image = nil
                 itemTitleLabel.text = "Test"
                 itemDescLabel.text = "Some description"
-            } else {
-                // TODO: Implement item sets
             }
         }
     }
@@ -35,5 +40,4 @@ class TableViewCell: UITableViewCell {
         super.prepareForReuse()
         self.item = nil
     }
-    
 }
