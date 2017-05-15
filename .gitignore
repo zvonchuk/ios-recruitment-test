@@ -9,8 +9,6 @@ build/*
 !default.mode2v3
 *.perspectivev3
 !default.perspectivev3
-*.xcworkspace
-!default.xcworkspace
 xcuserdata
 profile
 *.moved-aside
@@ -23,10 +21,3 @@ profile
 # Files that might appear on external disk
 .Spotlight-V100
 .Trashes
-
-# SourceTree (Mac) Configuration Files
-sourcetreeconfig
-
-# Podfiles
-Podfile.lock
-Pods/*
