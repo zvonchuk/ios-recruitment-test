@@ -43,13 +43,18 @@ class ViewController: UIViewController, UITableViewDataSource, UISearchBarDelega
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.items.count
+        return viewModel.filtered.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: TableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
-        cell.item = viewModel.items[indexPath.row]
-        print(viewModel.items[indexPath.row].id)
+        cell.item = viewModel.filtered[indexPath.row]
         return cell
+    }
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        viewModel.filter(searchText) { [weak self] in
+            self?.tableView.reloadData()
+        }
     }
 }

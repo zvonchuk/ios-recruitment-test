@@ -13,14 +13,26 @@ class ItemsViewModel {
     var apiDataManager: ApiDataManager!
     
     // in real project use SwiftBond for data binding
+    var filtered = [Item]()
     var items = [Item]()
     var error: Error?
+    var filter = ""
+    
+    func filter(_ filter: String, completion: @escaping () -> Void) {
+        if !filter.isEmpty {
+            filtered = items.filter { $0.details?.localizedCaseInsensitiveContains(filter) ?? false }
+        } else {
+            filtered = items
+        }
+        
+        completion()
+    }
     
     func fetchItems(completion: @escaping () -> Void) {
         localDataManager.fetchItems { (items, error) in
             self.items = items ?? []
+            self.filtered = self.items
             self.error = error
-            
             completion()
         }
     }
@@ -28,8 +40,8 @@ class ItemsViewModel {
     func updateItems(completion: @escaping () -> Void) {
         apiDataManager.fetchItems { (items, error) in
             self.items = items ?? []
+            self.filtered = self.items
             self.error = error
-            
             completion()
             
             if !self.items.isEmpty {
