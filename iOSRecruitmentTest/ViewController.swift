@@ -11,16 +11,34 @@ import UIKit
 class ViewController: UIViewController, UITableViewDataSource, UISearchBarDelegate {
 
     @IBOutlet weak var searchBar: UISearchBar!
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var tableView: UITableView! {
+        didSet {
+            tableView.register(TableViewCell.self)
+            tableView.addSubview(refreshControl)
+            refreshControl.addTarget(self, action: #selector(updateItems), for: .valueChanged)
+        }
+    }
     
+    let refreshControl = UIRefreshControl()
     var viewModel: ItemsViewModel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(TableViewCell.self)
-        
+        setupItems()
+    }
+    
+    func setupItems() {
+        refreshControl.beginRefreshing()
         viewModel.fetchItems { [weak self] in
             self?.tableView.reloadData()
+            self?.refreshControl.endRefreshing()
+        }
+    }
+    
+    func updateItems() {
+        viewModel.updateItems { [weak self] in
+            self?.tableView.reloadData()
+            self?.refreshControl.endRefreshing()
         }
     }
 
@@ -31,6 +49,7 @@ class ViewController: UIViewController, UITableViewDataSource, UISearchBarDelega
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: TableViewCell = tableView.dequeueReusableCell(forIndexPath: indexPath)
         cell.item = viewModel.items[indexPath.row]
+        print(viewModel.items[indexPath.row].id)
         return cell
     }
 }
